@@ -94,10 +94,6 @@ app.post("/payment", (req, res) => {
   });
 });
 
-app.get("/payment", (req, res) => {
-  res.send("payment is working");
-});
-
 app.listen(process.env.PORT || 5000, () => {
   console.log(`App is running on port ${process.env.PORT}`);
 });
