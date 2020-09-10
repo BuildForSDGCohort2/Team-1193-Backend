@@ -9,10 +9,8 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const db = knex({
   client: "pg",
   connection: {
-    host: "127.0.0.1",
-    user: "postgres",
-    password: "2416Vince",
-    database: "IntelligentFarm",
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
   },
 });
 
@@ -79,20 +77,20 @@ app.post("/signin", (req, res) => {
     .catch((error) => res.status(400).json("wrong credentials"));
 });
 
-// app.post("/payment", (req, res) => {
-//   const body = {
-//     source: req.body.token.id,
-//     amount: req.body.amount,
-//     currency: "usd",
-//   };
-//   stripe.charges.create(body, (stripeErr, stripeRes) => {
-//     if (stripeErr) {
-//       res.status(500).send({ error: stripeErr });
-//     } else {
-//       res.status(200).send({ success: stripeRes });
-//     }
-//   });
-// });
+app.post("/payment", (req, res) => {
+  const body = {
+    source: req.body.token.id,
+    amount: req.body.amount,
+    currency: "usd",
+  };
+  stripe.charges.create(body, (stripeErr, stripeRes) => {
+    if (stripeErr) {
+      res.status(500).send({ error: stripeErr });
+    } else {
+      res.status(200).send({ success: stripeRes });
+    }
+  });
+});
 
 app.get("/payment", (req, res) => {
   res.send("payment is working");
