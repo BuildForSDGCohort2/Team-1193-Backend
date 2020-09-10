@@ -9,10 +9,8 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const db = knex({
   client: "pg",
   connection: {
-    host: "127.0.0.1",
-    user: "postgres",
-    password: "2416Vince",
-    database: "IntelligentFarm",
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
   },
 });
 
