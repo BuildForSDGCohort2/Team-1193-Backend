@@ -5,6 +5,7 @@ const cors = require("cors");
 const knex = require("knex");
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const enforce = require("express-sslify");
 
 const db = knex({
   client: "pg",
@@ -18,7 +19,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
-
+app.use(enforce.HTTPS({ trustProtoHeader: true }));
 app.get("/", (req, res) => {
   res.send("This is the intelligent farm BuildForSDG project server.");
 });
