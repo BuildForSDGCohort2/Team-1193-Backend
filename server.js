@@ -5,15 +5,17 @@ const cors = require("cors");
 const knex = require("knex");
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+<<<<<<< HEAD
 const farmproduce = require("./controllers/farmproduce");
+=======
+const enforce = require("express-sslify");
+>>>>>>> 6b5f6ee70bc453af0476c236227ad5866a9eb7a9
 
 const db = knex({
   client: "pg",
   connection: {
-    host: "127.0.0.1",
-    user: "postgres",
-    password: "2416Vince",
-    database: "IntelligentFarm",
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
   },
 });
 
@@ -21,7 +23,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
-
+app.use(enforce.HTTPS({ trustProtoHeader: true }));
 app.get("/", (req, res) => {
   res.send("This is the intelligent farm BuildForSDG project server.");
 });
@@ -90,10 +92,13 @@ app.post("/payment", (req, res) => {
       res.status(200).send({ success: stripeRes });
     }
   });
+<<<<<<< HEAD
 });
 
 app.get("/payment", (req, res) => {
   res.send("payment is working");
+=======
+>>>>>>> 6b5f6ee70bc453af0476c236227ad5866a9eb7a9
 });
 
 app.listen(process.env.PORT || 5000, () => {
