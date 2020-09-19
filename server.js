@@ -6,6 +6,7 @@ const knex = require("knex");
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const enforce = require("express-sslify");
+const farmproduce = require("./controllers/farmproduce");
 
 const db = knex({
   client: "pg",
@@ -27,10 +28,7 @@ app.get("/", (req, res) => {
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 app.get("/farmproduce", (req, res) => {
-  db.select("*")
-    .from("farmproduce")
-    .then((data) => res.json(data))
-    .catch((error) => res.status(400).json("unable to get the data"));
+  farmproduce.handleGetFarmproduce(req, res, db);
 });
 
 app.post("/register", (req, res) => {
