@@ -8,6 +8,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const enforce = require("express-sslify");
 const farmproduce = require("./controllers/farmproduce");
 const register = require("./controllers/register");
+const signin = require("./controllers/signin");
 
 const db = knex({
   client: "pg",
@@ -37,26 +38,7 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/signin", (req, res) => {
-  const { email, password } = req.body;
-  db.select("email", "hash")
-    .from("login")
-    .where("email", "=", email)
-    .then((data) => {
-      const isValid = bcrypt.compareSync(password, data[0].hash);
-      if (isValid) {
-        return db
-          .select("*")
-          .from("users")
-          .where("email", "=", email)
-          .then((user) => {
-            res.json(user[0]);
-          })
-          .catch((error) => res.status(400).json("unable to get user"));
-      } else {
-        res.status(400).json("Incorrect credentials");
-      }
-    })
-    .catch((error) => res.status(400).json("wrong credentials"));
+  signin.handleSignin(req, res, db, bcrypt);
 });
 
 app.post("/payment", (req, res) => {
